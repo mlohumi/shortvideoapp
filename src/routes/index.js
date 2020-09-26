@@ -20,7 +20,7 @@ import {
 import Home from '../screens/Home';
 import Uploads from '../screens/Uploads';
 // import Discover from '../screens/Discover';
-// import Profile from '../screens/Profile';
+import Profile from '../screens/Profile';
 // import Inbox from '../screens/Inbox';
 
 const Stack = createStackNavigator();
@@ -48,7 +48,7 @@ const Routes = () => (
         }}
       />
       {/* <Stack.Screen name="Discover" component={Discover} /> */}
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -76,7 +76,7 @@ const Routes = () => (
             />
           ),
         }}
-      /> */}
+      />
       {/* <Stack.Screen
         name="Inbox"
         component={Inbox}
