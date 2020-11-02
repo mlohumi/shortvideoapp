@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Dimensions, ScrollView} from 'react-native';
+import {View, Dimensions, ScrollView, Modal} from 'react-native';
 
 import {TabView, SceneMap} from 'react-native-tab-view';
 
@@ -12,6 +12,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import BottomTabNavigator from '../../components/BottomTabNavigator';
+
+import Login from '../../components/Modals/Login';
 
 import {
   Container,
@@ -36,6 +38,7 @@ import Likeds from '../../components/TabsProfile/Likeds';
 import Privates from '../../components/TabsProfile/Privates';
 
 export default function Profile({navigation}) {
+  const [modal, setModal] = useState(true);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'posts', title: 'posts'},
@@ -51,6 +54,7 @@ export default function Profile({navigation}) {
 
   return (
     <Container>
+      <Login />
       <ScrollView>
         <UserImage
           resizeMode="contain"

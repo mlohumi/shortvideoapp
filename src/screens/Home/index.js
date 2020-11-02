@@ -50,17 +50,29 @@ export default function Home({navigation}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const {width, height} = Dimensions.get('window');
 
-  const onChangeImage = (index) => {
-    console.log(index);
-    setCurrentIndex(index);
-    setPaused(false);
-  };
+  // const onChangeImage = (index) => {
+  //   console.log(index);
+  //   setCurrentIndex(index);
+  //   setPaused(false);
+  // };
+
+  // useEffect(() => {
+  //   if props.NavigaIndex != cureent
+  //     setPaused(true)
+  // else
+  //   true
+
+  // }, [prop])
+
   return (
-    <View style={{height}}>
+    <View style={{height: height}}>
       <Swiper
         automaticallyAdjustContentInsets={true}
         showsPagination={false}
-        onIndexChanged={onChangeImage}
+        onIndexChanged={(index) => {
+          console.log(index, 'abc');
+          setCurrentIndex(index), setPaused(false);
+        }}
         index={0}
         loop={false}
         horizontal={false}>

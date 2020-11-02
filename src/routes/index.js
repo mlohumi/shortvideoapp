@@ -23,61 +23,68 @@ import Uploads from '../screens/Uploads';
 import Profile from '../screens/Profile';
 // import Inbox from '../screens/Inbox';
 
+//Redux
+import {Provider} from 'react-redux';
+import store from '../store';
+
 const Stack = createStackNavigator();
 
 StatusBar.setHidden(true);
 
 const Routes = () => (
-  <NavigationContainer
-    onStateChange={(state) =>
-      state.index == 0 ? StatusBar.setHidden(true) : StatusBar.setHidden(false)
-    }>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          header: () => null,
-        }}
-      />
-      <Stack.Screen
-        name="Uploads"
-        component={Uploads}
-        options={{
-          header: () => null,
-        }}
-      />
-      {/* <Stack.Screen name="Discover" component={Discover} /> */}
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          headerTitle: () => (
-            <Text
-              numberOfLines={1}
-              style={{maxWidth: 150, fontWeight: 'bold', fontSize: 18}}>
-              Mukesh Lohumi
-            </Text>
-          ),
-          headerLeft: () => (
-            <FontAwesomeIcon
-              style={{marginLeft: 10}}
-              icon={faUserPlus}
-              size={25}
-              color="#010101"
-            />
-          ),
-          headerRight: () => (
-            <FontAwesomeIcon
-              style={{marginRight: 10}}
-              icon={faEllipsisH}
-              size={25}
-              color="#010101"
-            />
-          ),
-        }}
-      />
-      {/* <Stack.Screen
+  <Provider store={store}>
+    <NavigationContainer
+      onStateChange={(state) =>
+        state.index == 0
+          ? StatusBar.setHidden(true)
+          : StatusBar.setHidden(false)
+      }>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            header: () => null,
+          }}
+        />
+        <Stack.Screen
+          name="Uploads"
+          component={Uploads}
+          options={{
+            header: () => null,
+          }}
+        />
+        {/* <Stack.Screen name="Discover" component={Discover} /> */}
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerTitle: () => (
+              <Text
+                numberOfLines={1}
+                style={{maxWidth: 150, fontWeight: 'bold', fontSize: 18}}>
+                Mukesh Lohumi
+              </Text>
+            ),
+            headerLeft: () => (
+              <FontAwesomeIcon
+                style={{marginLeft: 10}}
+                icon={faUserPlus}
+                size={25}
+                color="#010101"
+              />
+            ),
+            headerRight: () => (
+              <FontAwesomeIcon
+                style={{marginRight: 10}}
+                icon={faEllipsisH}
+                size={25}
+                color="#010101"
+              />
+            ),
+          }}
+        />
+        {/* <Stack.Screen
         name="Inbox"
         component={Inbox}
         options={{
@@ -99,8 +106,9 @@ const Routes = () => (
           ),
         }}
       /> */}
-    </Stack.Navigator>
-  </NavigationContainer>
+      </Stack.Navigator>
+    </NavigationContainer>
+  </Provider>
 );
 
 export default Routes;
