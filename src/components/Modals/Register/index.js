@@ -15,35 +15,41 @@ import {
   faEye,
   faEyeSlash,
   faTimes,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Register from '../Register';
+import Login from '../Login'
+import axios from 'axios'
 
 import { connect } from 'react-redux';
 import { setAlert } from '../../../actions/alert';
+import { register } from '../../../actions/auth'
 import Alert from '../../layout/Alert';
 import PropTypes from 'prop-types';
-import { login } from '../../../actions/auth'
+import { onChange } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 
-const Login = ({ login, isAuthenticated }) => {
+const Register = ({ setAlert, register }) => {
   const [showPass, setShowPass] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
   const [press, setPress] = useState(false);
-  const [toggle, setToggle] = useState(true);
 
-  const [userData, setuserData] = useState({
+  const [userData, setUserData] = useState({
+    name: '',
     email: '',
     password: '',
-  });
+    password2: ''
+  })
 
-  const { email, password } = userData
+  const { name, email, password, password2 } = userData
+  const [toggle, setToggle] = useState(true)
 
-  const onChangeVal = (inputName, inputValue) => setuserData({
+  const onChangeVal = (inputName, inputValue) => setUserData({
     ...userData,
     [inputName]: inputValue
   })
+
   const show = () => {
     if (press == false) {
       setShowPass(false), setPress(true);
@@ -52,9 +58,38 @@ const Login = ({ login, isAuthenticated }) => {
     }
   };
 
-  const handleLogin = () => {
+  const handleRegister = async () => {
     // e.preventDefault();
-    login(email, password)
+    if (password !== password2) {
+      setAlert('Password do not match !', 'danger');
+    } else {
+      console.log(userData);
+
+      register({ name, email, password })
+
+      //   const newUser = {
+      //       name,
+      //       email,
+      //       password,
+      //   }
+
+      //   try {
+      //       const config =  {
+      //           header: {
+      //               'Content-Type': 'application/json'
+      //           }
+      //       }
+
+      //     //   const body = JSON.stringify(newUser)
+      //     const body = newUser
+      //       console.log(body.name, "BODY")
+
+      //       const res = await axios.post('http://192.168.1.34:5000/api/users', body, config);
+      //       console.log(res.data)
+      //   } catch (err) {
+      //       console.error(err.response.data, "ABCDEF")
+      //   }
+    }
   };
 
   const modalClose = () => {
@@ -64,18 +99,26 @@ const Login = ({ login, isAuthenticated }) => {
   if (toggle) {
     return (
       <View>
-        <Modal isVisible={isAuthenticated ? false : true}>
+        <Modal isVisible={openModal}>
           <View style={styles.bgContainer}>
             <TouchableOpacity style={styles.closeIcon} onPress={modalClose}>
               <FontAwesomeIcon icon={faTimes} size={25} />
             </TouchableOpacity>
             <Alert />
             <View style={styles.inputView}>
-              <FontAwesomeIcon
-                icon={faUser}
-                size={25}
-                style={styles.inputIcon}
+              <FontAwesomeIcon icon={faUser} size={25} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder={'Username'}
+                value={name}
+                onChangeText={(text) => onChangeVal('name', text)}
+                placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+                underLineColorAndroid="transparent"
               />
+            </View>
+
+            <View style={styles.inputView}>
+              <FontAwesomeIcon icon={faEnvelope} size={25} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder={'Email'}
@@ -87,11 +130,7 @@ const Login = ({ login, isAuthenticated }) => {
             </View>
 
             <View style={styles.inputView}>
-              <FontAwesomeIcon
-                icon={faLock}
-                size={25}
-                style={styles.inputIcon}
-              />
+              <FontAwesomeIcon icon={faLock} size={25} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder={'Password'}
@@ -109,37 +148,55 @@ const Login = ({ login, isAuthenticated }) => {
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
-              <Text style={styles.btnText}>Login</Text>
-            </TouchableOpacity>
-            <Text style={styles.regText}>
-              New Member! Please register to continue
-            </Text>
-            <TouchableOpacity
-              style={styles.btnLogin}
-              onPress={() => setToggle(false)}>
+
+            <View style={styles.inputView}>
+              <FontAwesomeIcon icon={faLock} size={25} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder={'Confirm Password'}
+                value={password2}
+                secureTextEntry={showPass}
+                onChangeText={(text) => onChangeVal('password2', text)}
+                placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+                underLineColorAndroid="transparent"
+              />
+
+              <TouchableOpacity style={styles.btnEye} onPress={show}>
+                <FontAwesomeIcon
+                  icon={press == false ? faEye : faEyeSlash}
+                  size={25}
+                />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.btnLogin} onPress={handleRegister}>
               <Text style={styles.btnText}>Register</Text>
+            </TouchableOpacity>
+            <Text style={styles.logText}>Already a member ! Login Now</Text>
+            <TouchableOpacity style={styles.btnLogin} onPress={() => setToggle(false)}>
+              <Text style={styles.btnText}>Login</Text>
             </TouchableOpacity>
           </View>
         </Modal>
       </View>
     );
   } else {
-    //New Member Registration Form
-    return <Register />;
+    // Member login  Form
+    return (
+      <Login />
+    );
   }
+
 };
 
-Login.propTypes = {
-  login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
-})
-
-export default connect(mapStateToProps, { login })(Login);
+export default connect(
+  null,
+  { setAlert, register })
+  (Register);
 
 const styles = StyleSheet.create({
   bgContainer: {
@@ -183,7 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  regText: {
+  logText: {
     marginTop: 60,
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 18,
