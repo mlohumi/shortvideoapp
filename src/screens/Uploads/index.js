@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
-import {View, Text, Alert, Button, ActivityIndicator} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Alert, Button, ActivityIndicator } from 'react-native';
 
-import {RNS3} from 'react-native-s3-upload';
+import { RNS3 } from 'react-native-s3-upload';
 import ImagePicker from 'react-native-image-picker';
 
 import axios from 'axios';
 
 import BottomTabNavigator from '../../components/BottomTabNavigator';
 
-import {Container} from './styles';
+import { Container } from './styles';
 
-export default function Uploads({navigation}) {
+export default function Uploads({ navigation }) {
   const [loader, setLoader] = useState(false);
   const handleUploadFiles = (e) => {
     e.preventDefault();
@@ -49,6 +49,10 @@ export default function Uploads({navigation}) {
           //TODO : Message after uploading file - "Upload Successful"
 
           console.log(response.body.postResponse, 'RESPONSE');
+          if (response?.body?.postResponse?.location) {
+            alert('Upload Successful')
+            // post to text in post api
+          }
           if (response.status !== 201) {
             throw new Error('Failed to upload image to S3');
           }
@@ -65,12 +69,12 @@ export default function Uploads({navigation}) {
         {loader ? (
           <ActivityIndicator size="large" color="#00ff00" />
         ) : (
-          <View>
-            <Button
-              onPress={handleUploadFiles}
-              title="Click to upload video"></Button>
-          </View>
-        )}
+            <View>
+              <Button
+                onPress={handleUploadFiles}
+                title="Click to upload video"></Button>
+            </View>
+          )}
       </View>
       <BottomTabNavigator
         background="#010101"

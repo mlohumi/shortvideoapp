@@ -19,9 +19,11 @@ import {
 
 import Home from '../screens/Home';
 import Uploads from '../screens/Uploads';
-// import Discover from '../screens/Discover';
+import Discover from '../screens/Discover';
 import Profile from '../screens/Profile';
-// import Inbox from '../screens/Inbox';
+import Login from '../screens/Login'
+import Register from '../screens/Register'
+import Inbox from '../screens/Inbox';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -30,6 +32,7 @@ import { Provider } from 'react-redux';
 import store from '../store';
 import { loadUser } from '../actions/auth'
 import setAuthToken from '../utils/setAuthToken';
+// import Register from '../components/Modals/Register';
 
 const Stack = createStackNavigator();
 
@@ -59,7 +62,7 @@ const Routes = () => {
       if (authTok) {
         setAuth(authTok)
       } else {
-        setAuth(auth)
+        setAuth(null)
       }
       console.log(authTok, "ascdb")
     }
@@ -91,7 +94,21 @@ const Routes = () => {
               header: () => null,
             }}
           />
-          {/* <Stack.Screen name="Discover" component={Discover} /> */}
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              header: () => null,
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              header: () => null,
+            }}
+          />
+          <Stack.Screen name="Discover" component={Discover} />
           <Stack.Screen
             name="Profile"
             component={Profile}
@@ -121,28 +138,28 @@ const Routes = () => {
               ),
             }}
           />
-          {/* <Stack.Screen
-        name="Inbox"
-        component={Inbox}
-        options={{
-          headerTitle: () => (
-            <Text
-              numberOfLines={1}
-              style={{maxWidth: 150, fontWeight: 'bold', fontSize: 18}}>
-              All activity
-            </Text>
-          ),
-          headerLeft: () => null,
-          headerRight: () => (
-            <FontAwesomeIcon
-              style={{marginRight: 10}}
-              icon={faPaperPlane}
-              size={25}
-              color="#010101"
-            />
-          ),
-        }}
-      /> */}
+          <Stack.Screen
+            name="Inbox"
+            component={Inbox}
+            options={{
+              headerTitle: () => (
+                <Text
+                  numberOfLines={1}
+                  style={{ maxWidth: 150, fontWeight: 'bold', fontSize: 18 }}>
+                  All activity
+                </Text>
+              ),
+              headerLeft: () => null,
+              headerRight: () => (
+                <FontAwesomeIcon
+                  style={{ marginRight: 10 }}
+                  icon={faPaperPlane}
+                  size={25}
+                  color="#010101"
+                />
+              ),
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
