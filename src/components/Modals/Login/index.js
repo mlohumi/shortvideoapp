@@ -54,6 +54,7 @@ const Login = ({ login, isAuthenticated }) => {
 
   const handleLogin = () => {
     // e.preventDefault();
+
     login(email, password)
   };
 

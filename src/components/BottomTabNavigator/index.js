@@ -38,8 +38,8 @@ const BottomTabNavigator = ({
         if (isAuthenticated) {
           navigation.navigate('Uploads')
         } else {
-          navigation.navigate('Login', { title: 'luiz' })
-          ToastAndroid.show("Please Login to Continue.", ToastAndroid.SHORT)
+          navigation.navigate('Login')
+          ToastAndroid.showWithGravity("Please Login to Continue.", ToastAndroid.SHORT, ToastAndroid.TOP)
         }
       }}>
         <Add>
@@ -50,7 +50,15 @@ const BottomTabNavigator = ({
         <FontAwesomeIcon icon={faInbox} size={28} color={colorIcon} />
         <Title style={{ color: colorTitle }}>Inbox</Title>
       </Button>
-      <Button onPress={() => navigation.navigate('Profile', { title: 'luiz' })}>
+      <Button onPress={() => {
+        if (isAuthenticated) {
+          navigation.navigate('Profile')
+        } else {
+          navigation.navigate('Login', { title: 'Mukesh' })
+          ToastAndroid.showWithGravity("Please Login to Continue.", ToastAndroid.SHORT, ToastAndroid.TOP)
+        }
+      }
+      }>
         <FontAwesomeIcon icon={faUser} size={28} color={colorIcon} />
         <Title style={{ color: colorTitle }}>Me</Title>
       </Button>

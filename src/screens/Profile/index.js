@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, Dimensions, ScrollView, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View, Text, Dimensions, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid
+} from 'react-native';
 
 import { TabView, SceneMap } from 'react-native-tab-view';
 
@@ -11,9 +13,8 @@ import {
   faHeart,
 } from '@fortawesome/free-solid-svg-icons';
 
-import BottomTabNavigator from '../../components/BottomTabNavigator';
 
-import Login from '../../components/Modals/Login';
+import BottomTabNavigator from '../../components/BottomTabNavigator';
 
 import {
   Container,
@@ -33,6 +34,8 @@ import {
   Tab,
 } from './styles';
 
+import Home from '../Home/index'
+
 import Posts from '../../components/TabsProfile/Posts';
 import Likeds from '../../components/TabsProfile/Likeds';
 import Privates from '../../components/TabsProfile/Privates';
@@ -40,9 +43,19 @@ import Privates from '../../components/TabsProfile/Privates';
 //Redux 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { getCurrentProfile } from '../../actions/profile'
+import { logout } from '../../actions/auth'
 
-const Profile = ({ navigation, isAuthenticated }) => {
-  const [modal, setModal] = useState(true);
+const { width } = Dimensions.get('window');
+
+
+const Profile = ({
+  navigation,
+  getCurrentProfile,
+  auth: { user, isAuthenticated },
+  profile: { profile, loading },
+  logout
+}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'posts', title: 'posts' },
@@ -50,26 +63,37 @@ const Profile = ({ navigation, isAuthenticated }) => {
     { key: 'privates', title: 'privates' },
   ]);
 
+
   const renderScene = SceneMap({
     posts: Posts,
     likeds: Likeds,
     privates: Privates,
   });
 
-  return (
-    <Container>
-      {isAuthenticated ?
-        <Text>HI AUTHENTICATED</Text>
-        :
-        (<ScrollView>
+  useEffect(() => {
+    getCurrentProfile()
+  }, [])
+
+  if (!isAuthenticated) {
+    ToastAndroid.showWithGravity("Logged Out Successfully.", ToastAndroid.SHORT, ToastAndroid.TOP)
+    navigation.navigate('Home')
+    return null
+  } else {
+    return (
+      <Container>
+        <TouchableOpacity style={styles.btnLogin} onPress={logout}>
+          <Text style={styles.btnText}>Logout</Text>
+        </TouchableOpacity>
+        <ScrollView>
           <UserImage
             resizeMode="contain"
-            source={require('../../assets/profile.jpg')}
+            source={require('../../assets/profileicon.png')}
           />
           <View>
-            <UserName>@mukesh</UserName>
+            <UserName>{user && user.name}</UserName>
+            <Text style={styles.text}>All features will be available in the next release. Thanks for logging in 😊 </Text>
           </View>
-          <UserFollowers>
+          {/* <UserFollowers>
             <UserFollowersText>
               <UserFollowersTextNumber>0</UserFollowersTextNumber>
               <UserFollowersTextDesc>Following</UserFollowersTextDesc>
@@ -82,19 +106,19 @@ const Profile = ({ navigation, isAuthenticated }) => {
               <UserFollowersTextNumber>197867</UserFollowersTextNumber>
               <UserFollowersTextDesc>Likes</UserFollowersTextDesc>
             </UserFollowersText>
-          </UserFollowers>
-          <EditProfile>
-            <ButtonEditProfile>
-              <ButtonEditProfileText>Edit profile</ButtonEditProfileText>
-            </ButtonEditProfile>
-            <ButtonFavorites>
-              <FontAwesomeIcon icon={faBookmark} size={20} color="#333" />
-            </ButtonFavorites>
-          </EditProfile>
-          <ButtonAddBio>
-            <ButtonAddBioText>Tap to add bio</ButtonAddBioText>
-          </ButtonAddBio>
-          <TabView
+          </UserFollowers> */}
+          {/* <EditProfile>
+          <ButtonEditProfile>
+            <ButtonEditProfileText>Edit profile</ButtonEditProfileText>
+          </ButtonEditProfile>
+          <ButtonFavorites>
+            <FontAwesomeIcon icon={faBookmark} size={20} color="#333" />
+          </ButtonFavorites>
+        </EditProfile>
+        <ButtonAddBio>
+          <ButtonAddBioText>Tap to add bio</ButtonAddBioText>
+        </ButtonAddBio> */}
+          {/* <TabView
             renderTabBar={(props) => (
               <Tabs>
                 {props.navigationState.routes.map((tab, key) => (
@@ -135,28 +159,53 @@ const Profile = ({ navigation, isAuthenticated }) => {
             renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={{ width: Dimensions.get('window').width, height: 200 }}
-          />
-        </ScrollView>)
-      }
-      {/* <Login /> */}
+          /> */}
+        </ScrollView>
 
-      <BottomTabNavigator
-        background="#010101"
-        colorIcon="#FFF"
-        colorTitle="#FFF"
-        navigation={navigation}
-      />
-    </Container>
-  );
+        <BottomTabNavigator
+          background="#010101"
+          colorIcon="#FFF"
+          colorTitle="#FFF"
+          navigation={navigation}
+        />
+      </Container>
+    );
+  }
 }
 
 Profile.propTypes = {
-  // login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
+  getCurrentProfile: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  auth: state.auth,
+  profile: state.profile
 })
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, { getCurrentProfile, logout })(Profile);
+
+const styles = StyleSheet.create({
+  btnLogin: {
+    width: width - 180,
+    height: 45,
+    borderRadius: 25,
+    backgroundColor: '#432577',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  btnText: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    fontSize: 13,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 25
+  }
+})

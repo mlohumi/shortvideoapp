@@ -117,7 +117,7 @@ const Routes = () => {
                 <Text
                   numberOfLines={1}
                   style={{ maxWidth: 150, fontWeight: 'bold', fontSize: 18 }}>
-                  Mukesh Lohumi
+                  Profile
                 </Text>
               ),
               headerLeft: () => (
@@ -127,15 +127,17 @@ const Routes = () => {
                   size={25}
                   color="#010101"
                 />
+
               ),
-              headerRight: () => (
-                <FontAwesomeIcon
-                  style={{ marginRight: 10 }}
-                  icon={faEllipsisH}
-                  size={25}
-                  color="#010101"
-                />
-              ),
+              headerRight: () => null,
+              // (
+              // <FontAwesomeIcon
+              //   style={{ marginRight: 10 }}
+              //   icon={faEllipsisH}
+              //   size={25}
+              //   color="#010101"
+              // />
+              // ),
             }}
           />
           <Stack.Screen

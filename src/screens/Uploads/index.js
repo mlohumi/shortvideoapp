@@ -6,11 +6,15 @@ import ImagePicker from 'react-native-image-picker';
 
 import axios from 'axios';
 
+import { addPost } from '../../actions/post'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import BottomTabNavigator from '../../components/BottomTabNavigator';
 
 import { Container } from './styles';
 
-export default function Uploads({ navigation }) {
+const Uploads = ({ navigation, addPost }) => {
   const [loader, setLoader] = useState(false);
   const handleUploadFiles = (e) => {
     e.preventDefault();
@@ -27,10 +31,11 @@ export default function Uploads({ navigation }) {
         console.log(photo, 'GOT URI');
 
         try {
+          let num = Math.floor((Math.random() * 9999999) + 1000000)
           setLoader(true);
           const file = {
             uri: 'file://' + photo.path,
-            name: 'video.mp4',
+            name: `${num}` + `video.mp4`,
             type: 'video/mp4',
           };
 
@@ -42,15 +47,18 @@ export default function Uploads({ navigation }) {
             secretKey: 'LzXVTrl7DY6UoYu/fzCJ3Znd9GiCug9pPrhHK13K',
             successActionStatus: 201,
           };
-
+          console.log("1")
           let response = await RNS3.put(file, awsoptions);
           setLoader(false);
+          let text = response.body.postResponse.location
 
-          //TODO : Message after uploading file - "Upload Successful"
+          addPost({ text })
 
+          console.log("2")
           console.log(response.body.postResponse, 'RESPONSE');
           if (response?.body?.postResponse?.location) {
             alert('Upload Successful')
+
             // post to text in post api
           }
           if (response.status !== 201) {
@@ -85,3 +93,13 @@ export default function Uploads({ navigation }) {
     </Container>
   );
 }
+
+Uploads.propTypes = {
+  addPost: PropTypes.func.isRequired,
+};
+
+// const mapStateToProps = state => ({
+//   isAuthenticated: state.auth.isAuthenticated
+// })
+
+export default connect(null, { addPost })(Uploads)

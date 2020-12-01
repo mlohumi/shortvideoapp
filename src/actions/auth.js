@@ -21,13 +21,14 @@ export const loadUser = () => async dispatch => {
     }
 
     try {
-        const res = await axios.get('http://192.168.1.101:5000/api/auth'); //change to absolute path - use default proxy
+        const res = await axios.get('https://sanskari-app.herokuapp.com/api/auth'); //change to absolute path - use default proxy
         console.log(res.data, "RESPONSE DATA")
 
         dispatch({
             type: USER_LOADED,
             payload: res.data
         })
+
     } catch (err) {
         dispatch({
             type: AUTH_ERROR
@@ -46,7 +47,7 @@ export const register = ({ name, email, password }) => async dispatch => {
     const body = JSON.stringify({ name, password, email })
 
     try {
-        const res = await axios.post('http://192.168.1.101:5000/api/users', body, config)
+        const res = await axios.post('https://sanskari-app.herokuapp.com/api/users', body, config)
 
         dispatch({
             type: REGISTER_SUCCESS,
@@ -81,13 +82,12 @@ export const login = (email, password) => async dispatch => {
     const body = JSON.stringify({ email, password })
 
     try {
-        const res = await axios.post('http://192.168.1.101:5000/api/auth', body, config)
+        const res = await axios.post('https://sanskari-app.herokuapp.com/api/auth', body, config)
 
         dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data
         })
-
         dispatch(loadUser())
     } catch (err) {
 
@@ -104,3 +104,9 @@ export const login = (email, password) => async dispatch => {
         })
     }
 }
+
+//Logout User / Clear Profile
+
+export const logout = () => dispatch => {
+    dispatch({ type: LOGOUT })
+} 

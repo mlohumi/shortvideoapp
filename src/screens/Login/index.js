@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     TextInput,
     Dimensions,
     TouchableOpacity,
+    ToastAndroid
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
@@ -24,6 +25,7 @@ import { connect } from 'react-redux';
 import Alert from '../../components/layout/Alert';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth'
+import Home from '../Home/index'
 
 const { width } = Dimensions.get('window');
 
@@ -55,68 +57,77 @@ const Login = ({ navigation, login, isAuthenticated }) => {
         login(email, password)
     };
 
-    return (
-        <View style={styles.bgContainer}>
-            <Alert />
-            <View style={styles.inputView}>
-                <FontAwesomeIcon
-                    icon={faUser}
-                    size={25}
-                    style={styles.inputIcon}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder={'Email'}
-                    value={email}
-                    onChangeText={(text) => onChangeVal('email', text)}
-                    placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
-                    underLineColorAndroid="transparent"
-                />
-            </View>
-
-            <View style={styles.inputView}>
-                <FontAwesomeIcon
-                    icon={faLock}
-                    size={25}
-                    style={styles.inputIcon}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder={'Password'}
-                    value={password}
-                    secureTextEntry={showPass}
-                    onChangeText={(text) => onChangeVal('password', text)}
-                    placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
-                    underLineColorAndroid="transparent"
-                />
-
-                <TouchableOpacity style={styles.btnEye} onPress={show}>
+    if (isAuthenticated) {
+        ToastAndroid.showWithGravity("Login Successful.", ToastAndroid.SHORT, ToastAndroid.TOP)
+        navigation.navigate('Home')
+        return null
+        // (
+        //     <Home />
+        // )
+    } else {
+        return (
+            <View style={styles.bgContainer}>
+                <Alert />
+                <View style={styles.inputView}>
                     <FontAwesomeIcon
-                        icon={press == false ? faEye : faEyeSlash}
+                        icon={faUser}
                         size={25}
+                        style={styles.inputIcon}
                     />
-                </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
-                <Text style={styles.btnText}>Login</Text>
-            </TouchableOpacity>
-            <Text style={styles.regText}>
-                New Member! Please register to continue
-            </Text>
-            <TouchableOpacity
-                style={styles.btnLogin}
-                onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.btnText}>Register</Text>
-            </TouchableOpacity>
-            <BottomTabNavigator
-                background="transparent"
-                colorIcon="#FFF"
-                colorTitle="#FFF"
-                navigation={navigation}
-            />
-        </View>
+                    <TextInput
+                        style={styles.input}
+                        placeholder={'Email'}
+                        value={email}
+                        onChangeText={(text) => onChangeVal('email', text)}
+                        placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+                        underLineColorAndroid="transparent"
+                    />
+                </View>
+                <View style={styles.inputView}>
+                    <FontAwesomeIcon
+                        icon={faLock}
+                        size={25}
+                        style={styles.inputIcon}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder={'Password'}
+                        value={password}
+                        secureTextEntry={showPass}
+                        onChangeText={(text) => onChangeVal('password', text)}
+                        placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+                        underLineColorAndroid="transparent"
+                    />
 
-    );
+                    <TouchableOpacity style={styles.btnEye} onPress={show}>
+                        <FontAwesomeIcon
+                            icon={press == false ? faEye : faEyeSlash}
+                            size={25}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
+                    <Text style={styles.btnText}>Login</Text>
+                </TouchableOpacity>
+                <Text style={styles.regText}>
+                    New Member! Please register to continue
+            </Text>
+                <TouchableOpacity
+                    style={styles.btnLogin}
+                    onPress={() => navigation.navigate('Register')}>
+                    <Text style={styles.btnText}>Register</Text>
+                </TouchableOpacity>
+
+                <BottomTabNavigator
+                    background="transparent"
+                    colorIcon="#FFF"
+                    colorTitle="#FFF"
+                    navigation={navigation}
+                />
+            </View>
+
+        );
+    }
 };
 
 Login.propTypes = {
